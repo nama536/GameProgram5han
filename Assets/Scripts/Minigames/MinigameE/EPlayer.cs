@@ -4,7 +4,7 @@ using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class EManager : MonoBehaviour
+public class EPlayer : MonoBehaviour
 {
     //コントローラーの左スティック入力受け取り
     Vector2 axis;
@@ -16,6 +16,8 @@ public class EManager : MonoBehaviour
     //弾
     [SerializeField] GameObject _bullet;
 
+    bool _isGround = false;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -26,24 +28,42 @@ public class EManager : MonoBehaviour
         PlayerMove();
     }
 
+    //左スティック取得
     void OnMove(InputValue value)
     {
         axis = value.Get<Vector2>();
     }
 
+    //横移動
     void PlayerMove()
     {
         rb.velocity = new Vector2(axis.x * _playerSpeed,rb.velocity.y);
     }
 
+    //ジャンプ
     void OnJump()
     {
-        rb.velocity = new Vector2(rb.velocity.x,_playerJump);
+        if(_isGround == true)
+        {
+            rb.velocity = new Vector2(rb.velocity.x,_playerJump);
+            _isGround = false;
+        }
     }
 
+    //射撃
     void OnShoot()
     {
         Debug.Log("ファイア");
-        Instantiate(_bullet,transform.position,transform.rotation);
+        Instantiate(_bullet,transform.position + new Vector3(0.6f,0.0f,0.0f),transform.rotation);
+    }
+
+    //地面についたら
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Ground" )
+        {
+            //飛べるようにする
+           _isGround = true;
+        }
     }
 }
