@@ -27,6 +27,7 @@ public class MainModeManager : MonoBehaviour
     public void StartMainMode()
     {
         OnMainMode = true;
+        _stageNumber.Clear();
 
         for(int i = 0;i < _stageCount;i++)
         {
@@ -69,6 +70,10 @@ public class MainModeManager : MonoBehaviour
             }
 
             _stageNumber.Remove(i);
+        }
+        else
+        {
+            StartMainMode();
         }
     }
 }
