@@ -16,11 +16,8 @@ public class TitleManager : MonoBehaviour
 
     [SerializeField] PlayerDataManager[] _playerDataManagers;
 
-    private MainModeManager _mainModeManager;
-
     void Start()
     {
-        _mainModeManager = FindFirstObjectByType<MainModeManager>();
         JoinDevice();
     }
 
@@ -51,7 +48,7 @@ public class TitleManager : MonoBehaviour
 
     public void DoMainMode()
     {
-        _mainModeManager.StartMainMode();
+        MainModeManager.instance.StartMainMode();
     }
 
     public void DoSelectMode()
