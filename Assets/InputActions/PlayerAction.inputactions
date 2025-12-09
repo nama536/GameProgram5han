@@ -2,7 +2,7 @@
     "name": "PlayerAction",
     "maps": [
         {
-            "name": "Player",
+            "name": "EPlayer",
             "id": "8c937ca1-6a5c-4d93-a295-62fe751e922a",
             "actions": [
                 {
@@ -506,6 +506,62 @@
                     "processors": "",
                     "groups": "Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "Cancel",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "APlayer",
+            "id": "91aabfb2-cac4-4d20-96d5-0c0a07a6da7f",
+            "actions": [
+                {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "b5cb9f3f-9a4c-4514-b800-fdf439c89958",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "32f01eb0-8c48-4e9b-9863-da7533bbe237",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Push",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Ready",
+            "id": "5ddf8dde-4ae1-4b74-bd21-ab01275f799e",
+            "actions": [
+                {
+                    "name": "Ready",
+                    "type": "Button",
+                    "id": "e7a01029-703a-48ef-aa0e-7846f81bf03b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "9137111e-65ce-46bf-9e3e-498b54cea3fa",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ready",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

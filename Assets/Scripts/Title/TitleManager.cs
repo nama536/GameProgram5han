@@ -8,10 +8,15 @@ using UnityEngine.Video;
 
 public class TitleManager : MonoBehaviour
 {
+    //最初のセレクト画面
     [SerializeField] GameObject _firstSelect;
+    //セレクトモードを選んだ時の画面
     [SerializeField] GameObject _selectMode;
+    //メインモードボタン
     [SerializeField] Button _mainMode;
+    //ゲームAボタン
     [SerializeField] Button _gameA;
+    //タイトル画面の操作
     [SerializeField] PlayerInput _titleInput;
 
     [SerializeField] PlayerDataManager[] _playerDataManagers;
@@ -23,24 +28,33 @@ public class TitleManager : MonoBehaviour
 
     void JoinDevice()
     {
+        //デバイスを解除
         _playerDataManagers[0].PlayerDevice = null;
         _playerDataManagers[1].PlayerDevice = null;
 
+        Debug.Log(InputSystem.devices.Count);
+
         foreach(var device in InputSystem.devices)
         {
+            //ゲームパッドが繋がってたら
             if (device.name.Contains("Gamepad"))
             {
                 if(_playerDataManagers[0].PlayerDevice == null)
                 {
+                    //一つ目のデバイスを登録
                     _playerDataManagers[0].PlayerDevice = device;
                     Debug.Log(_playerDataManagers[0].PlayerDevice);
+                    Debug.Log("プレイヤー１");
 
+                    //プレイヤー1の機種をタイトル画面の操作に使用
                     _titleInput.SwitchCurrentControlScheme(_playerDataManagers[0].PlayerDevice);
                 }
                 else if(_playerDataManagers[1].PlayerDevice == null)
                 {
+                    //二つ目のデバイスを登録
                     _playerDataManagers[1].PlayerDevice = device;
                     Debug.Log(_playerDataManagers[1].PlayerDevice);
+                    Debug.Log("プレイヤー２");
                 }
             }
         }
@@ -48,6 +62,10 @@ public class TitleManager : MonoBehaviour
 
     public void DoMainMode()
     {
+        //ラウンド数を0にする
+        MainModeManager.instance.RoundCount = 0;
+        //メインモードを開始する
+        MainModeManager.instance.OnMainMode = true;
         MainModeManager.instance.StartMainMode();
     }
 
