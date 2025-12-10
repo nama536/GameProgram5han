@@ -20,7 +20,6 @@ public class APlayer : MonoBehaviour
     void Start()
     {
         _aGame = FindFirstObjectByType<AGame>();
-        Debug.Log("_aGame: " + _aGame);
     }
 
     void OnReady()

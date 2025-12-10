@@ -6,6 +6,16 @@ using UnityEngine.InputSystem;
 
 public class EPlayer : MonoBehaviour
 {
+    //プレイヤーの判別
+    public enum PlayerCount
+    {
+        PlayerOne,
+        PlayerTwo
+    }
+    public PlayerCount ThisPlayerCount;
+    //インプット
+    [SerializeField] PlayerInput _playerInput;
+
     //コントローラーの左スティック入力受け取り
     private Vector2 _axis;
     //プレイヤーの物理
@@ -17,19 +27,44 @@ public class EPlayer : MonoBehaviour
     [SerializeField] GameObject _bullet;
 
     //地面に着いているか
-    private bool _isGround = false;
+    private bool _isGround = true;
     //どちらを向いているか
     private bool _doRight;
 
+    private EGame _eGame;
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
     }
 
+    void Start()
+    {
+        _eGame = FindFirstObjectByType<EGame>();
+    }
+
     void Update()
     {
-        PlayerMove();
+        if (_eGame.OnGame)
+        {
+            PlayerMove();
+        }
+    }
+
+    void OnReady()
+    {
+        Debug.Log("レディ");
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            _eGame.PlayerDataManagers[0].Ready = true;
+        }
+
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            _eGame.PlayerDataManagers[1].Ready = true;
+        }
+
+        _playerInput.SwitchCurrentActionMap("EPlayer");
     }
 
     //左スティック取得
@@ -62,7 +97,7 @@ public class EPlayer : MonoBehaviour
     //ジャンプ
     void OnJump()
     {
-        if(_isGround == true)
+        if(_isGround == true && _eGame.OnGame)
         {
             _rb.velocity = new Vector2(_rb.velocity.x,_playerJump);
             _isGround = false;
@@ -72,11 +107,11 @@ public class EPlayer : MonoBehaviour
     //射撃
     void OnShoot()
     {
-        if(_doRight == true)
+        if(_doRight == true && _eGame.OnGame)
         {
             Instantiate(_bullet,transform.position + new Vector3(0.6f,0.0f,0.0f),transform.rotation);
         }
-        else if(_doRight == false)
+        else if(_doRight == false && _eGame.OnGame)
         {
             Instantiate(_bullet,transform.position + new Vector3(-0.6f,0.0f,0.0f),transform.rotation);
         }
@@ -85,7 +120,7 @@ public class EPlayer : MonoBehaviour
     //地面についたら
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Ground" )
+        if (collision.gameObject.tag == "Ground" && _eGame.OnGame)
         {
             //飛べるようにする
            _isGround = true;

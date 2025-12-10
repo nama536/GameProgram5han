@@ -10,4 +10,6 @@ public class PlayerDataManager : ScriptableObject
     public InputDevice PlayerDevice;
     //プレイヤーが準備できたか
     public bool Ready = false;
+    //メインモードのスコア
+    public int MainModeScore = 0;
 }

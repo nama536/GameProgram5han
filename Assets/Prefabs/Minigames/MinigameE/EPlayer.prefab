@@ -262,7 +262,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: Player
+  m_DefaultActionMap: 5ddf8dde-4ae1-4b74-bd21-ab01275f799e
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &3366937567142438177
@@ -277,6 +277,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e55c931bca18b4881a59d34812b73b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ThisPlayerCount: 0
+  _playerInput: {fileID: 4598092317188771567}
   _playerSpeed: 5
   _playerJump: 8
   _bullet: {fileID: 2727348426191484771, guid: e9bfc7d18358d480da8189e05cd31386, type: 3}

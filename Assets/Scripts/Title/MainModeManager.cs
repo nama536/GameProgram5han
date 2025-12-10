@@ -43,7 +43,7 @@ public class MainModeManager : MonoBehaviour
         RandomStage();
     }
 
-    void RandomStage()
+    public void RandomStage()
     {
         //まだやってないステージがあったら
         if(_stageNumber != null)

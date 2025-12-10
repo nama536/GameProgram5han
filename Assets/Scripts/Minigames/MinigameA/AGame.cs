@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class AGame : MonoBehaviour
@@ -31,6 +32,10 @@ public class AGame : MonoBehaviour
     private float _gameTimeCount;
     [SerializeField] TextMeshProUGUI _gameTimeCountText;
     [SerializeField] Image _gameTimeCircle;
+    //ゲームパネル
+    [SerializeField] GameObject _onGamePanel;
+    //リザルト勝敗テキスト
+    [SerializeField] TextMeshProUGUI[] _resultText;
 
     public PlayerDataManager[] PlayerDataManagers;
 
@@ -82,8 +87,6 @@ public class AGame : MonoBehaviour
         {
             _howToPlayPanel.SetActive(false);
             StartCoroutine("GameStart");
-            Debug.Log(PlayerDataManagers[0].Ready);
-            Debug.Log(PlayerDataManagers[1].Ready);
             _nowWaitReady = false;
         }
     }
@@ -135,7 +138,51 @@ public class AGame : MonoBehaviour
         {
             _countDownText.gameObject.SetActive(true);
             _countDownText.text = "End";
+            StartCoroutine("GameEnd");
             OnGame = false;
+        }
+    }
+
+    IEnumerator GameEnd()
+    {
+        yield return new WaitForSeconds(3f);
+
+        _onGamePanel.SetActive(false);
+
+        if(_playerOnePushCount > _playerTwoPushCount)
+        {
+            _resultText[0].text = "勝ち";
+            _resultText[1].text = "負け";
+
+            PlayerDataManagers[0].MainModeScore++;
+        }
+        if(_playerOnePushCount < _playerTwoPushCount)
+        {
+            _resultText[0].text = "負け";
+            _resultText[1].text = "勝ち";
+
+            PlayerDataManagers[1].MainModeScore++;
+        }
+        yield return new WaitForSeconds(3f);
+
+        if (!MainModeManager.instance.OnMainMode)
+        {
+            SceneManager.LoadScene("Title");
+        }
+        else
+        {
+            _resultText[0].text = PlayerDataManagers[0].MainModeScore.ToString();
+            _resultText[1].text = PlayerDataManagers[1].MainModeScore.ToString();
+        }
+        yield return new WaitForSeconds(3f);
+
+        if(PlayerDataManagers[0].MainModeScore == 3 || PlayerDataManagers[1].MainModeScore == 3)
+        {
+            SceneManager.LoadScene("Result");
+        }
+        else
+        {
+            MainModeManager.instance.RandomStage();
         }
     }
 }
