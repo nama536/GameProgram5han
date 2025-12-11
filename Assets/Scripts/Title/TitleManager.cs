@@ -8,6 +8,10 @@ using UnityEngine.Video;
 
 public class TitleManager : MonoBehaviour
 {
+    //準備完了待ち画面
+    [SerializeField] GameObject _waitReadyPanel;
+    //準備完了画面中か
+    private bool _nowWaitReady = true;
     //最初のセレクト画面
     [SerializeField] GameObject _firstSelect;
     //セレクトモードを選んだ時の画面
@@ -45,9 +49,6 @@ public class TitleManager : MonoBehaviour
                     _playerDataManagers[0].PlayerDevice = device;
                     Debug.Log(_playerDataManagers[0].PlayerDevice);
                     Debug.Log("プレイヤー１");
-
-                    //プレイヤー1の機種をタイトル画面の操作に使用
-                    _titleInput.SwitchCurrentControlScheme(_playerDataManagers[0].PlayerDevice);
                 }
                 else if(_playerDataManagers[1].PlayerDevice == null)
                 {
@@ -57,6 +58,19 @@ public class TitleManager : MonoBehaviour
                     Debug.Log("プレイヤー２");
                 }
             }
+        }
+    }
+
+    void WaitReady()
+    {
+        if (_nowWaitReady && _playerDataManagers[0].Ready && _playerDataManagers[1].Ready)
+        {
+            _waitReadyPanel.SetActive(false);
+            _selectMode.SetActive(true);
+            _nowWaitReady = false;
+
+            //プレイヤー1の機種をタイトル画面の操作に使用
+            _titleInput.SwitchCurrentControlScheme(_playerDataManagers[0].PlayerDevice);
         }
     }
 

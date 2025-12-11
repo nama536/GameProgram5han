@@ -282,4 +282,4 @@ MonoBehaviour:
   _playerSpeed: 5
   _playerJump: 8
   _bullet: {fileID: 2727348426191484771, guid: e9bfc7d18358d480da8189e05cd31386, type: 3}
-  _coolTime: 2
+  _coolTime: 1.5
