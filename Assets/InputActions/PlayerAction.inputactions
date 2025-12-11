@@ -566,6 +566,34 @@
                     "isPartOfComposite": false
                 }
             ]
+        },
+        {
+            "name": "BPlayer",
+            "id": "50a6b704-416b-4bf2-b0d2-bf75560bf9a5",
+            "actions": [
+                {
+                    "name": "Push",
+                    "type": "Button",
+                    "id": "0c6f0e18-e49c-4a5c-8f93-925ade5ab605",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "2fd1ceb3-e37d-47ca-a511-b45ad8211a46",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Push",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
         }
     ],
     "controlSchemes": [
