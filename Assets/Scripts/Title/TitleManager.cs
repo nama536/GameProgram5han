@@ -62,8 +62,10 @@ public class TitleManager : MonoBehaviour
 
     public void DoMainMode()
     {
-        //ラウンド数を0にする
+        //ラウンド数とスコアを0にする
         MainModeManager.instance.RoundCount = 0;
+        _playerDataManagers[0].MainModeScore = 0;
+        _playerDataManagers[1].MainModeScore = 0;
         //メインモードを開始する
         MainModeManager.instance.OnMainMode = true;
         MainModeManager.instance.StartMainMode();

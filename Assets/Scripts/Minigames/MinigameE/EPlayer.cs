@@ -44,6 +44,15 @@ public class EPlayer : MonoBehaviour
     void Start()
     {
         _eGame = FindFirstObjectByType<EGame>();
+
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            _doRight = true;
+        }
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            _doRight = false;
+        }
     }
 
     void Update()

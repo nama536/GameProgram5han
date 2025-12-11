@@ -25,7 +25,7 @@ public class MainModeManager : MonoBehaviour
     //ステージのID
     [SerializeField] List<int> _stageNumber = new List<int>();
     //ステージ数
-    private int _stageCount = 7;
+    private int _stageCount = 2;
     //現在のラウンド数
     public int RoundCount = 0;
 
@@ -37,7 +37,6 @@ public class MainModeManager : MonoBehaviour
         {
             //ステージのIDをリストに入れる
             _stageNumber.Add(i);
-            Debug.Log(i);
         }
 
         RandomStage();
@@ -46,13 +45,19 @@ public class MainModeManager : MonoBehaviour
     public void RandomStage()
     {
         //まだやってないステージがあったら
-        if(_stageNumber != null)
+        if(_stageNumber.Count != 0)
         {
             //リストからランダムなシーンを読み込む
             int i = Random.Range(0,_stageNumber.Count);
             switch (_stageNumber[i])
             {
                 case 0:
+                    SceneManager.LoadScene("MinigameA");
+                    break;
+                case 1:
+                    SceneManager.LoadScene("MinigameE");
+                    break;
+                /*case 0:
                     SceneManager.LoadScene("MinigameA");
                     break;
                 case 1:
@@ -72,17 +77,19 @@ public class MainModeManager : MonoBehaviour
                     break;
                 case 6:
                     SceneManager.LoadScene("MinigameG");
-                    break;
+                    break;*/
             }
 
             //ラウンド数をプラス
             RoundCount++;
             //読み込んだステージをリストから削除
-            _stageNumber.Remove(i);
+            _stageNumber.RemoveAt(i);
+            Debug.Log("削除" + i);
         }
         else
         {
             //もうやってないステージがなかったらリストに全部また入れる
+            Debug.Log("再抽選");
             StartMainMode();
         }
     }
