@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 3366937567142438177}
   m_Layer: 0
   m_Name: EPlayer
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -262,7 +262,7 @@ MonoBehaviour:
   m_ActionEvents: []
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: 5ddf8dde-4ae1-4b74-bd21-ab01275f799e
+  m_DefaultActionMap: Ready
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &3366937567142438177
@@ -282,3 +282,4 @@ MonoBehaviour:
   _playerSpeed: 5
   _playerJump: 8
   _bullet: {fileID: 2727348426191484771, guid: e9bfc7d18358d480da8189e05cd31386, type: 3}
+  _coolTime: 2

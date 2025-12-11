@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class EGame : MonoBehaviour
 {
@@ -16,12 +18,19 @@ public class EGame : MonoBehaviour
     [SerializeField] GameObject _howToPlayPanel;
     //キャンバス
     [SerializeField] GameObject _canvas;
+    [SerializeField] GameObject _onGameUI;
     //カウントダウンテキスト
     [SerializeField] TextMeshProUGUI _countDownText;
     //ゲーム中かどうか
     public bool OnGame = false;
     //プレイヤーのキャラ
     [SerializeField] GameObject _playerPrefab;
+    //HP
+    private int _playerOneHP = 3;
+    private int _playerTwoHP = 3;
+    [SerializeField] TextMeshProUGUI[] _hPText;
+    //リザルト勝敗テキスト
+    [SerializeField] TextMeshProUGUI[] _resultText;
 
     public PlayerDataManager[] PlayerDataManagers;
 
@@ -40,6 +49,7 @@ public class EGame : MonoBehaviour
     void Update()
     {
         WaitReady();
+        JudgeGameEnd();
     }
 
     void HowToPlay()
@@ -78,6 +88,7 @@ public class EGame : MonoBehaviour
 
     IEnumerator GameStart()
     {
+        _onGameUI.SetActive(true);
         _countDownText.gameObject.SetActive(true);
         _countDownText.text = "3";
         yield return new WaitForSeconds(1f);
@@ -93,5 +104,77 @@ public class EGame : MonoBehaviour
         yield return new WaitForSeconds(1f);
 
         _countDownText.gameObject.SetActive(false);
+    }
+
+    public void HPDown(EPlayer.PlayerCount playerCount)
+    {
+        if (playerCount == EPlayer.PlayerCount.PlayerOne)
+        {
+            _playerOneHP--;
+            _hPText[0].text = _playerOneHP.ToString();
+        }
+        if(playerCount == EPlayer.PlayerCount.PlayerTwo)
+        {
+            _playerTwoHP--;
+            _hPText[1].text = _playerTwoHP.ToString();
+        }
+    }
+
+    void JudgeGameEnd()
+    {
+        if (OnGame)
+        {
+            if (_playerOneHP == 0 || _playerTwoHP == 0)
+            {
+                _countDownText.gameObject.SetActive(true);
+                _countDownText.text = "End";
+                StartCoroutine("GameEnd");
+                OnGame = false;
+            }
+        }
+    }
+
+    IEnumerator GameEnd()
+    {
+        yield return new WaitForSeconds(3f);
+
+        _onGameUI.SetActive(false);
+        _canvas.SetActive(true);
+
+        if(_playerOneHP > _playerTwoHP)
+        {
+            _resultText[0].text = "勝ち";
+            _resultText[1].text = "負け";
+
+            PlayerDataManagers[0].MainModeScore++;
+        }
+        if(_playerOneHP < _playerTwoHP)
+        {
+            _resultText[0].text = "負け";
+            _resultText[1].text = "勝ち";
+
+            PlayerDataManagers[1].MainModeScore++;
+        }
+        yield return new WaitForSeconds(3f);
+
+        if (!MainModeManager.instance.OnMainMode)
+        {
+            SceneManager.LoadScene("Title");
+        }
+        else
+        {
+            _resultText[0].text = PlayerDataManagers[0].MainModeScore.ToString();
+            _resultText[1].text = PlayerDataManagers[1].MainModeScore.ToString();
+        }
+        yield return new WaitForSeconds(3f);
+
+        if(PlayerDataManagers[0].MainModeScore == 3 || PlayerDataManagers[1].MainModeScore == 3)
+        {
+            SceneManager.LoadScene("Result");
+        }
+        else
+        {
+            MainModeManager.instance.RandomStage();
+        }
     }
 }

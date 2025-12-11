@@ -25,6 +25,9 @@ public class EPlayer : MonoBehaviour
     [SerializeField] float _playerJump;
     //弾
     [SerializeField] GameObject _bullet;
+    //クールタイム
+    private bool _canShoot = true;
+    [SerializeField] float _coolTime;
 
     //地面に着いているか
     private bool _isGround = true;
@@ -107,14 +110,45 @@ public class EPlayer : MonoBehaviour
     //射撃
     void OnShoot()
     {
-        if(_doRight == true && _eGame.OnGame)
+        if(_doRight == true && _eGame.OnGame && _canShoot)
         {
-            Instantiate(_bullet,transform.position + new Vector3(0.6f,0.0f,0.0f),transform.rotation);
+            var bullet = Instantiate(_bullet,transform.position + new Vector3(0.8f,0.0f,0.0f),transform.rotation);
+
+            EBullet eBullet = bullet.GetComponent<EBullet>();
+            if(ThisPlayerCount == PlayerCount.PlayerOne)
+            {
+                eBullet.BulletType = EBullet.WhoBullet.PlayerOne;
+            }
+            if(ThisPlayerCount == PlayerCount.PlayerTwo)
+            {
+                eBullet.BulletType = EBullet.WhoBullet.PlayerTwo;
+            }
+
+            _canShoot = false;
+            Invoke("CanShoot",_coolTime);
         }
-        else if(_doRight == false && _eGame.OnGame)
+        else if(_doRight == false && _eGame.OnGame && _canShoot)
         {
-            Instantiate(_bullet,transform.position + new Vector3(-0.6f,0.0f,0.0f),transform.rotation);
+            var bullet = Instantiate(_bullet,transform.position + new Vector3(-0.8f,0.0f,0.0f),transform.rotation);
+
+            EBullet eBullet = bullet.GetComponent<EBullet>();
+            if(ThisPlayerCount == PlayerCount.PlayerOne)
+            {
+                eBullet.BulletType = EBullet.WhoBullet.PlayerOne;
+            }
+            if(ThisPlayerCount == PlayerCount.PlayerTwo)
+            {
+                eBullet.BulletType = EBullet.WhoBullet.PlayerTwo;
+            }
+
+            _canShoot = false;
+            Invoke("CanShoot",_coolTime);
         }
+    }
+
+    void CanShoot()
+    {
+        _canShoot = true;
     }
 
     //地面についたら
