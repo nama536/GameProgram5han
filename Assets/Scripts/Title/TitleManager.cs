@@ -28,20 +28,31 @@ public class TitleManager : MonoBehaviour
     //ゲームAボタン
     [SerializeField] Button _gameA;
     //プレイヤー1のインプット
-    private PlayerInput[] _playerInputs;
+    private PlayerInput[] _playerInputs = new PlayerInput[2];
 
-    [SerializeField] PlayerDataManager[] _playerDataManagers;
+    public PlayerDataManager[] PlayerDataManagers;
+
+    void Awake()
+    {
+        PlayerDataManagers[0].Ready = false;
+        PlayerDataManagers[1].Ready = false;
+    }
 
     void Start()
     {
         JoinDevice();
     }
 
+    void Update()
+    {
+        WaitReady();
+    }
+
     void JoinDevice()
     {
         //デバイスを解除
-        _playerDataManagers[0].PlayerDevice = null;
-        _playerDataManagers[1].PlayerDevice = null;
+        PlayerDataManagers[0].PlayerDevice = null;
+        PlayerDataManagers[1].PlayerDevice = null;
 
         Debug.Log(InputSystem.devices.Count);
 
@@ -50,27 +61,33 @@ public class TitleManager : MonoBehaviour
             //ゲームパッドが繋がってたら
             if (device.name.Contains("Gamepad"))
             {
-                if(_playerDataManagers[0].PlayerDevice == null)
+                if(PlayerDataManagers[0].PlayerDevice == null)
                 {
                     //一つ目のデバイスを登録
-                    _playerDataManagers[0].PlayerDevice = device;
-                    Debug.Log(_playerDataManagers[0].PlayerDevice);
+                    PlayerDataManagers[0].PlayerDevice = device;
+                    Debug.Log(PlayerDataManagers[0].PlayerDevice);
                     Debug.Log("プレイヤー１");
 
                     //透明のプレイヤーを召喚
-                    _playerInputs[0] = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:_playerDataManagers[0].PlayerDevice);
+                    _playerInputs[0] = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[0].PlayerDevice);
                     _playerInputs[0].gameObject.transform.position = new Vector3(-6f,-2.5f,0.0f);
+
+                    TitlePlayer titlePlayer = _playerInputs[0].gameObject.GetComponent<TitlePlayer>();
+                    titlePlayer.ThisPlayerCount = TitlePlayer.PlayerCount.PlayerOne;
                 }
-                else if(_playerDataManagers[1].PlayerDevice == null)
+                else if(PlayerDataManagers[1].PlayerDevice == null)
                 {
                     //二つ目のデバイスを登録
-                    _playerDataManagers[1].PlayerDevice = device;
-                    Debug.Log(_playerDataManagers[1].PlayerDevice);
+                    PlayerDataManagers[1].PlayerDevice = device;
+                    Debug.Log(PlayerDataManagers[1].PlayerDevice);
                     Debug.Log("プレイヤー２");
 
                     //透明のプレイヤーを召喚
-                    _playerInputs[1] = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:_playerDataManagers[1].PlayerDevice);
+                    _playerInputs[1] = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[1].PlayerDevice);
                     _playerInputs[1].gameObject.transform.position = new Vector3(6f,-2.5f,0.0f);
+
+                    TitlePlayer titlePlayer = _playerInputs[1].gameObject.GetComponent<TitlePlayer>();
+                    titlePlayer.ThisPlayerCount = TitlePlayer.PlayerCount.PlayerTwo;
                 }
             }
         }
@@ -96,9 +113,9 @@ public class TitleManager : MonoBehaviour
         }
     }
 
-    async Task WaitReady()
+    async void WaitReady()
     {
-        if (_nowWaitReady && _playerDataManagers[0].Ready && _playerDataManagers[1].Ready)
+        if (_nowWaitReady && PlayerDataManagers[0].Ready && PlayerDataManagers[1].Ready)
         {
             await Task.Delay(1000);
             //準備中パネルを消す
@@ -114,8 +131,8 @@ public class TitleManager : MonoBehaviour
     {
         //ラウンド数とスコアを0にする
         MainModeManager.instance.RoundCount = 0;
-        _playerDataManagers[0].MainModeScore = 0;
-        _playerDataManagers[1].MainModeScore = 0;
+        PlayerDataManagers[0].MainModeScore = 0;
+        PlayerDataManagers[1].MainModeScore = 0;
         //メインモードを開始する
         MainModeManager.instance.OnMainMode = true;
         MainModeManager.instance.StartMainMode();

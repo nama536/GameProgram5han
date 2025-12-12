@@ -1935,7 +1935,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76c392e42b5098c458856cdf6ecaaaa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_FirstSelected: {fileID: 1047415559}
+  m_FirstSelected: {fileID: 0}
   m_sendNavigationEvents: 1
   m_DragThreshold: 10
 --- !u!4 &1365212370
@@ -1983,7 +1983,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _waitReadyPanel: {fileID: 2102966275}
-  _waitReadyUI: []
+  _waitReadyUI:
+  - {fileID: 1726032401}
+  - {fileID: 205831886}
   _playerPrefab: {fileID: 6757077369660018667, guid: bfa7493f96434454d82a2ab9998ab2be, type: 3}
   _playerSprites:
   - {fileID: 21300000, guid: 234484debeee24ad8a2dbd3a1c8fc13f, type: 3}
@@ -1992,7 +1994,7 @@ MonoBehaviour:
   _selectMode: {fileID: 1959135571}
   _mainMode: {fileID: 1047415560}
   _gameA: {fileID: 1718631706}
-  _playerDataManagers:
+  PlayerDataManagers:
   - {fileID: 11400000, guid: 23d45a980d1f9409dba98d834a99fed4, type: 2}
   - {fileID: 11400000, guid: ac5335647eff24a07acf30dfd6d1183f, type: 2}
 --- !u!4 &1438563245

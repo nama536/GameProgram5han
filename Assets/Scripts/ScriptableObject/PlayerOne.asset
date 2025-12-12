@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed43581ef8464488190034e636189c01, type: 3}
   m_Name: PlayerOne
   m_EditorClassIdentifier: 
-  PlayerID: 1
-  PlayerPrefab: {fileID: 0}
+  Ready: 1
+  MainModeScore: 0

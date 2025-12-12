@@ -25,5 +25,15 @@ public class TitlePlayer : MonoBehaviour
     void OnReady()
     {
         _titleManager.DoReady(ThisPlayerCount);
+
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            _titleManager.PlayerDataManagers[0].Ready = true;
+        }
+
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            _titleManager.PlayerDataManagers[1].Ready = true;
+        }
     }
 }
