@@ -18,6 +18,7 @@ public class TitleManager : MonoBehaviour
     //プレイヤーのプレファブ
     [SerializeField] GameObject _playerPrefab;
     //プレイヤーの見た目
+    private SpriteRenderer[] _playerSpriteRenderers = new SpriteRenderer[2];
     [SerializeField] Sprite[] _playerSprites;
     //最初のセレクト画面
     [SerializeField] GameObject _firstSelect;
@@ -98,16 +99,16 @@ public class TitleManager : MonoBehaviour
         //プレイヤー1の準備完了の動き
         if(playerCount == TitlePlayer.PlayerCount.PlayerOne)
         {
-            SpriteRenderer spriteRenderer = _playerInputs[0].gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = _playerSprites[0];
+            _playerSpriteRenderers[0] = _playerInputs[0].gameObject.GetComponent<SpriteRenderer>();
+            _playerSpriteRenderers[0].sprite = _playerSprites[0];
 
             _waitReadyUI[0].SetActive(false);
         }
         //プレイヤー2の準備完了の動き
         if(playerCount == TitlePlayer.PlayerCount.PlayerTwo)
         {
-            SpriteRenderer spriteRenderer = _playerInputs[1].gameObject.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = _playerSprites[1];
+            _playerSpriteRenderers[1] = _playerInputs[1].gameObject.GetComponent<SpriteRenderer>();
+            _playerSpriteRenderers[1].sprite = _playerSprites[1];
 
             _waitReadyUI[1].SetActive(false);
         }
@@ -120,6 +121,8 @@ public class TitleManager : MonoBehaviour
             await Task.Delay(1000);
             //準備中パネルを消す
             _waitReadyPanel.SetActive(false);
+            _playerSpriteRenderers[0].enabled = false;
+            _playerSpriteRenderers[1].enabled = false;
             FirstSelect();
             _nowWaitReady = false;
             //プレイヤー1の機種をタイトル画面の操作に使用

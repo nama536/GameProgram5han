@@ -35,6 +35,7 @@ public class APlayer : MonoBehaviour
             _aGame.PlayerDataManagers[1].Ready = true;
         }
 
+        _aGame.DoReady(ThisPlayerCount);
         _playerInput.SwitchCurrentActionMap("APlayer");
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -16,6 +17,10 @@ public class AGame : MonoBehaviour
     private bool _nowWaitReady = false;
     //遊び方説明パネル
     [SerializeField] GameObject _howToPlayPanel;
+    //プレイヤーの見た目
+    [SerializeField] Sprite[] _playerSprites;
+    //準備中ボタン画像
+    [SerializeField] Image[] _waitReadyImage;
     //カウントダウンテキスト
     [SerializeField] TextMeshProUGUI _countDownText;
     //ゲーム中かどうか
@@ -36,6 +41,8 @@ public class AGame : MonoBehaviour
     [SerializeField] GameObject _onGamePanel;
     //リザルト勝敗テキスト
     [SerializeField] TextMeshProUGUI[] _resultText;
+    //リザルトプレイヤー画像
+    [SerializeField] Image[] _resultPlayerImage;
 
     public PlayerDataManager[] PlayerDataManagers;
 
@@ -81,10 +88,25 @@ public class AGame : MonoBehaviour
         _nowWaitReady = true;
     }
 
-    void WaitReady()
+    public void DoReady(APlayer.PlayerCount playerCount)
+    {
+        //プレイヤー1の準備完了の動き
+        if(playerCount == APlayer.PlayerCount.PlayerOne)
+        {
+            _waitReadyImage[0].sprite = _playerSprites[0];
+        }
+        //プレイヤー2の準備完了の動き
+        if(playerCount == APlayer.PlayerCount.PlayerTwo)
+        {
+            _waitReadyImage[1].sprite = _playerSprites[1];
+        }
+    }
+
+    async void WaitReady()
     {
         if (_nowWaitReady && PlayerDataManagers[0].Ready && PlayerDataManagers[1].Ready)
         {
+            await Task.Delay(1000);
             _howToPlayPanel.SetActive(false);
             StartCoroutine("GameStart");
             _nowWaitReady = false;
@@ -153,6 +175,7 @@ public class AGame : MonoBehaviour
         {
             _resultText[0].text = "勝ち";
             _resultText[1].text = "負け";
+            _resultPlayerImage[0].sprite = _playerSprites[2];
 
             PlayerDataManagers[0].MainModeScore++;
         }
@@ -160,6 +183,7 @@ public class AGame : MonoBehaviour
         {
             _resultText[0].text = "負け";
             _resultText[1].text = "勝ち";
+            _resultPlayerImage[1].sprite = _playerSprites[3];
 
             PlayerDataManagers[1].MainModeScore++;
         }

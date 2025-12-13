@@ -76,6 +76,7 @@ public class EPlayer : MonoBehaviour
             _eGame.PlayerDataManagers[1].Ready = true;
         }
 
+        _eGame.DoReady(ThisPlayerCount);
         _playerInput.SwitchCurrentActionMap("EPlayer");
     }
 
