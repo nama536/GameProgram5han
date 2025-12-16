@@ -205,6 +205,7 @@ public class AGame : MonoBehaviour
 
             PlayerDataManagers[1].MainModeScore++;
         }
+        
         yield return new WaitForSeconds(3f);
 
         if (!MainModeManager.instance.OnMainMode)
@@ -219,6 +220,7 @@ public class AGame : MonoBehaviour
             _resultPlayerImage[0].sprite = _playerSprites[0];
             _resultPlayerImage[1].sprite = _playerSprites[1];
         }
+
         yield return new WaitForSeconds(3f);
 
         if(PlayerDataManagers[0].MainModeScore == 3 || PlayerDataManagers[1].MainModeScore == 3)

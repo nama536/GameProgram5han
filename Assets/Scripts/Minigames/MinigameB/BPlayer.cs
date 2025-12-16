@@ -25,7 +25,6 @@ public class BPlayer : MonoBehaviour
     private void Start()
     {
         game = FindFirstObjectByType<Game>();
-
     }
 
     public void OnReady()
@@ -42,7 +41,7 @@ public class BPlayer : MonoBehaviour
         }
 
         game.DoReady(ThisPlayerCount);
-        _playerInput.SwitchCurrentActionMap("APlayer");
+        _playerInput.SwitchCurrentActionMap("BPlayer");
     }
 
     public void OnPush(InputAction.CallbackContext context)

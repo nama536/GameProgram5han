@@ -25,7 +25,7 @@ public class MainModeManager : MonoBehaviour
     //ステージのID
     [SerializeField] List<int> _stageNumber = new List<int>();
     //ステージ数
-    private int _stageCount = 2;
+    private int _stageCount = 3;
     //現在のラウンド数
     public int RoundCount = 0;
 
@@ -55,6 +55,9 @@ public class MainModeManager : MonoBehaviour
                     SceneManager.LoadScene("MinigameA");
                     break;
                 case 1:
+                    SceneManager.LoadScene("MinigameB");
+                    break;
+                case 2:
                     SceneManager.LoadScene("MinigameE");
                     break;
                 /*case 0:

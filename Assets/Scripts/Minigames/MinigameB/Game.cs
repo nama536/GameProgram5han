@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour
@@ -23,6 +24,8 @@ public class Game : MonoBehaviour
     [SerializeField] TextMeshProUGUI _countDownText;
     //ゲーム中かどうか
     public bool OnGame = false;
+    //ゲームパネル
+    [SerializeField] GameObject _onGamePanel;
 
     [Header("Star Settings")]
     [SerializeField] Image starImage;
@@ -31,28 +34,30 @@ public class Game : MonoBehaviour
     [SerializeField] Image player1Image;
     [SerializeField] Image player2Image;
 
-    [Header("Star Move Targets")]
+    /*[Header("Star Move Targets")]
     [SerializeField] Transform player1Target;
-    [SerializeField] Transform player2Target;
+    [SerializeField] Transform player2Target;*/
 
     [Header("Player Prefab")]
     [SerializeField] GameObject _playerPrefab;
-    [SerializeField] float drawThreshold = 0.06f;
+    //[SerializeField] float drawThreshold = 0.06f;
 
     public PlayerDataManager[] PlayerDataManagers;
 
-    private bool waiting = false;
     private bool canPress = false;
-    private bool resultShown = false;
-
     private bool p1Penalty = false;
     private bool p2Penalty = false;
 
-    private bool movingStar = false;
-    private Transform moveTarget;
+    /*private bool movingStar = false;
+    private Transform moveTarget;*/
     private float p1PressTime;
     private float p2PressTime;
     private float reactionTime;
+
+    //リザルト勝敗テキスト
+    [SerializeField] TextMeshProUGUI[] _resultText;
+    //リザルトプレイヤー画像
+    [SerializeField] Image[] _resultPlayerImage;
 
     [SerializeField] TextMeshProUGUI[] _pushCountTexts;
 
@@ -91,6 +96,7 @@ public class Game : MonoBehaviour
         );*/
 
         WaitReady();
+        TimeCount();
     }
 
     void HowToPlay()
@@ -156,13 +162,13 @@ public class Game : MonoBehaviour
         _countDownText.gameObject.SetActive(false);
     }
 
-    public void StartGame()
+    /*public void StartGame()
     {
-        /*waiting = true;
+        waiting = true;
         canPress = false;
         resultShown = false;
-        movingStar = false;*/
-    }
+        movingStar = false;
+    }*/
 
     void LightUpStar()
     {
@@ -170,7 +176,13 @@ public class Game : MonoBehaviour
         canPress = true;
     }
 
-
+    void TimeCount()
+    {
+        if(OnGame && canPress)
+        {
+            reactionTime += Time.deltaTime;
+        }
+    }
 
     public void WhoPush(BPlayer.PlayerCount playerCount,InputAction.CallbackContext context)
     {
@@ -208,12 +220,18 @@ public class Game : MonoBehaviour
         {
             if (context.started)
             {
-                if (canPress)
+                if (OnGame && canPress && !p1Penalty)
                 {
                     player1Image.sprite = _playerSprites[8];
 
                     p1PressTime = reactionTime;
-                    _pushCountTexts[0].text = p1PressTime.ToString();
+                    _pushCountTexts[0].text = p1PressTime.ToString("F2");
+
+                    Invoke(nameof(StopGame),2f);
+                }
+                else if(OnGame && !canPress && !p1Penalty)
+                {
+                    StartCoroutine(DoPenalty(playerCount));
                 }
             }
         }
@@ -222,59 +240,114 @@ public class Game : MonoBehaviour
         {
             if (context.started)
             {
-                if (canPress)
+                if (OnGame && canPress && !p2Penalty)
                 {
-                    player1Image.sprite = _playerSprites[9];
+                    player2Image.sprite = _playerSprites[9];
 
                     p2PressTime = reactionTime;
-                    _pushCountTexts[1].text = p2PressTime.ToString();
+                    _pushCountTexts[1].text = p2PressTime.ToString("F2");
+
+                    Invoke(nameof(StopGame),2f);
+                }
+                else if(OnGame && !canPress && !p2Penalty)
+                {
+                    StartCoroutine(DoPenalty(playerCount));
                 }
             }
         }
     }
 
-
-    void DecideWinner(int player)
+    IEnumerator DoPenalty(BPlayer.PlayerCount playerCount)
     {
-        resultShown = true;
-        waiting = false;
-        canPress = false;
-
-        if (player == 1)
-            moveTarget = player1Target;
-        else
-            moveTarget = player2Target;
-
-        movingStar = true;
-    }
-
-    void ApplyPenalty(int player)
-    {
-        if (player == 1 && !p1Penalty)
+        if (playerCount == BPlayer.PlayerCount.PlayerOne)
         {
             p1Penalty = true;
             player1Image.color = Color.gray;
-            Invoke(nameof(ResetP1Penalty), 3f);
         }
-        else if (player == 2 && !p2Penalty)
+
+        if (playerCount == BPlayer.PlayerCount.PlayerTwo)
         {
             p2Penalty = true;
-            player2Image.color = Color.gray;
-            Invoke(nameof(ResetP2Penalty), 3f);
+            player2Image.color = Color.gray;   
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        if(playerCount == BPlayer.PlayerCount.PlayerOne)
+        {
+            p1Penalty = false;
+            player1Image.color = Color.white;
+        }
+
+        if(playerCount == BPlayer.PlayerCount.PlayerTwo)
+        {
+            p2Penalty = false;
+            player2Image.color = Color.white;
         }
     }
 
-    void ResetP1Penalty()
+    void StopGame()
     {
-        p1Penalty = false;
-        player1Image.color = Color.white;
+        StartCoroutine(nameof(GameEnd));
     }
 
-    void ResetP2Penalty()
+    IEnumerator GameEnd()
     {
-        p2Penalty = false;
-        player2Image.color = Color.white;
+        _countDownText.gameObject.SetActive(true);
+        _countDownText.text = "End";
+
+        OnGame = false;
+
+        yield return new WaitForSeconds(3f);
+
+        _onGamePanel.SetActive(false);
+
+        if(p1PressTime < p2PressTime)
+        {
+            _resultText[0].text = "勝ち";
+            _resultText[1].text = "負け";
+            _resultPlayerImage[0].sprite = _playerSprites[2];
+            _resultPlayerImage[1].sprite = _playerSprites[5];
+
+            PlayerDataManagers[0].MainModeScore++;
+        }
+        if(p1PressTime > p2PressTime)
+        {
+            _resultText[0].text = "負け";
+            _resultText[1].text = "勝ち";
+            _resultPlayerImage[1].sprite = _playerSprites[3];
+            _resultPlayerImage[0].sprite = _playerSprites[4];
+
+            PlayerDataManagers[1].MainModeScore++;
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        if (!MainModeManager.instance.OnMainMode)
+        {
+            SceneManager.LoadScene("Title");
+        }
+        else
+        {
+            _resultText[0].text = PlayerDataManagers[0].MainModeScore.ToString();
+            _resultText[1].text = PlayerDataManagers[1].MainModeScore.ToString();
+
+            _resultPlayerImage[0].sprite = _playerSprites[0];
+            _resultPlayerImage[1].sprite = _playerSprites[1];
+        }
+
+        yield return new WaitForSeconds(3f);
+
+        if(PlayerDataManagers[0].MainModeScore == 3 || PlayerDataManagers[1].MainModeScore == 3)
+        {
+            SceneManager.LoadScene("Result");
+        }
+        else
+        {
+            MainModeManager.instance.RandomStage();
+        }
     }
+
     /*void CheckDraw()
     {
         float diff = Mathf.Abs(p1PressTime - p2PressTime);
@@ -300,5 +373,17 @@ public class Game : MonoBehaviour
             DecideWinner(1);
         else
             DecideWinner(2);
+    }
+
+    void DecideWinner(int player)
+    {
+        canPress = false;
+
+        if (player == 1)
+            moveTarget = player1Target;
+        else
+            moveTarget = player2Target;
+
+        movingStar = true;
     }*/
 }
