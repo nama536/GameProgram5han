@@ -28,6 +28,8 @@ public class AGame : MonoBehaviour
 
     //プレイヤーのキャラ
     [SerializeField] GameObject _playerPrefab;
+    //プレイヤーの見た目
+    [SerializeField] Image[] _playerOnGameImages;
     //プッシュカウント
     private int _playerOnePushCount;
     private int _playerTwoPushCount;
@@ -132,18 +134,36 @@ public class AGame : MonoBehaviour
         _countDownText.gameObject.SetActive(false);
     }
 
-    public void PushCount(APlayer.PlayerCount playerCount)
+    public void PushCount(APlayer.PlayerCount playerCount,InputAction.CallbackContext context)
     {
         if(playerCount == APlayer.PlayerCount.PlayerOne)
         {
-            _playerOnePushCount++;
-            _pushCountText[0].text = _playerOnePushCount.ToString();
+            if (context.started)
+            {
+                _playerOnePushCount++;
+                _pushCountText[0].text = _playerOnePushCount.ToString();
+
+                _playerOnGameImages[0].sprite = _playerSprites[6];
+            }
+            else if(context.canceled)
+            {
+                _playerOnGameImages[0].sprite = _playerSprites[4];
+            }
         }
 
         if(playerCount == APlayer.PlayerCount.PlayerTwo)
         {
-            _playerTwoPushCount++;
-            _pushCountText[1].text = _playerTwoPushCount.ToString();
+            if (context.started)
+            {
+                _playerTwoPushCount++;
+                _pushCountText[1].text = _playerTwoPushCount.ToString();
+
+                _playerOnGameImages[1].sprite = _playerSprites[7];
+            }
+            else if(context.canceled)
+            {
+                _playerOnGameImages[1].sprite = _playerSprites[5];
+            }
         }
     }
 

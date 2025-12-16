@@ -22,7 +22,7 @@ public class APlayer : MonoBehaviour
         _aGame = FindFirstObjectByType<AGame>();
     }
 
-    void OnReady()
+    public void OnReady()
     {
         Debug.Log("レディ");
         if(ThisPlayerCount == PlayerCount.PlayerOne)
@@ -39,11 +39,11 @@ public class APlayer : MonoBehaviour
         _playerInput.SwitchCurrentActionMap("APlayer");
     }
 
-    void OnPush()
+    public void OnPush(InputAction.CallbackContext context)
     {
         if (_aGame.OnGame)
         {
-            _aGame.PushCount(ThisPlayerCount);
+            _aGame.PushCount(ThisPlayerCount,context);
         }
     }
 }
