@@ -119,6 +119,8 @@ public class TitleManager : MonoBehaviour
         if (_nowWaitReady && PlayerDataManagers[0].Ready && PlayerDataManagers[1].Ready)
         {
             await Task.Delay(1000);
+            if (_waitReadyPanel == null) return;
+
             //準備中パネルを消す
             _waitReadyPanel.SetActive(false);
             _playerSpriteRenderers[0].enabled = false;

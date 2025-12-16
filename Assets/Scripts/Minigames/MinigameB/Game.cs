@@ -227,6 +227,7 @@ public class Game : MonoBehaviour
                     p1PressTime = reactionTime;
                     _pushCountTexts[0].text = p1PressTime.ToString("F2");
 
+                    CancelInvoke(nameof(StopGame));
                     Invoke(nameof(StopGame),2f);
                 }
                 else if(OnGame && !canPress && !p1Penalty)
@@ -247,6 +248,7 @@ public class Game : MonoBehaviour
                     p2PressTime = reactionTime;
                     _pushCountTexts[1].text = p2PressTime.ToString("F2");
 
+                    CancelInvoke(nameof(StopGame));
                     Invoke(nameof(StopGame),2f);
                 }
                 else if(OnGame && !canPress && !p2Penalty)

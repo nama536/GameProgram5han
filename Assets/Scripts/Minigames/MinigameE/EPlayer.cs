@@ -15,6 +15,8 @@ public class EPlayer : MonoBehaviour
     public PlayerCount ThisPlayerCount;
     //インプット
     [SerializeField] PlayerInput _playerInput;
+    //プレイヤーの見た目
+    public SpriteRenderer SpriteRenderer;
 
     //コントローラーの左スティック入力受け取り
     private Vector2 _axis;

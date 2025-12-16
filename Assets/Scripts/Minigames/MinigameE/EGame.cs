@@ -77,6 +77,9 @@ public class EGame : MonoBehaviour
         ePlayerOne.ThisPlayerCount = EPlayer.PlayerCount.PlayerOne;
         ePlayerTwo.ThisPlayerCount = EPlayer.PlayerCount.PlayerTwo;
 
+        ePlayerOne.SpriteRenderer.sprite = _playerSprites[6];
+        ePlayerTwo.SpriteRenderer.sprite = _playerSprites[1];
+
         PlayerDataManagers[0].Ready = false;
         PlayerDataManagers[1].Ready = false;
 
@@ -169,6 +172,7 @@ public class EGame : MonoBehaviour
             _resultText[0].text = "勝ち";
             _resultText[1].text = "負け";
             _resultPlayerImage[0].sprite = _playerSprites[2];
+            _resultPlayerImage[1].sprite = _playerSprites[5];
 
             PlayerDataManagers[0].MainModeScore++;
         }
@@ -177,6 +181,7 @@ public class EGame : MonoBehaviour
             _resultText[0].text = "負け";
             _resultText[1].text = "勝ち";
             _resultPlayerImage[1].sprite = _playerSprites[3];
+            _resultPlayerImage[0].sprite = _playerSprites[4];
 
             PlayerDataManagers[1].MainModeScore++;
         }
@@ -190,6 +195,9 @@ public class EGame : MonoBehaviour
         {
             _resultText[0].text = PlayerDataManagers[0].MainModeScore.ToString();
             _resultText[1].text = PlayerDataManagers[1].MainModeScore.ToString();
+
+            _resultPlayerImage[0].sprite = _playerSprites[0];
+            _resultPlayerImage[1].sprite = _playerSprites[1];
         }
         yield return new WaitForSeconds(3f);
 
