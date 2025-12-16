@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BPlayer : MonoBehaviour
 {
-    //ƒvƒŒƒCƒ„[‚Ì”»•Ê
+    //ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ì”ï¿½ï¿½ï¿½
 
     public enum PlayerCount
 
@@ -18,21 +19,42 @@ public class BPlayer : MonoBehaviour
 
     public PlayerCount ThisPlayerCount;
     private Game game;
+
+    [SerializeField] PlayerInput _playerInput;
+
     private void Start()
     {
         game = FindFirstObjectByType<Game>();
 
     }
-    void OnPush()
+
+    public void OnReady()
     {
-        // ƒvƒŒƒCƒ„[”Ô†‚ğGame‚É‘—‚é
+        Debug.Log("ãƒ¬ãƒ‡ã‚£");
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            game.PlayerDataManagers[0].Ready = true;
+        }
+
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            game.PlayerDataManagers[1].Ready = true;
+        }
+
+        game.DoReady(ThisPlayerCount);
+        _playerInput.SwitchCurrentActionMap("APlayer");
+    }
+
+    public void OnPush(InputAction.CallbackContext context)
+    {
+        // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ôï¿½ï¿½ï¿½Gameï¿½É‘ï¿½ï¿½ï¿½
         if (ThisPlayerCount == PlayerCount.PlayerOne)
         {
-            game.WhoPush(1);
+            game.WhoPush(ThisPlayerCount,context);
         }
         else
         {
-            game.WhoPush(2);
+            game.WhoPush(ThisPlayerCount,context);
         }
     }
 }

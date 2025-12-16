@@ -59,6 +59,9 @@ public class AGame : MonoBehaviour
         Invoke("HowToPlay",3.0f);
 
         _gameTimeCount = _gameTime;
+
+        PlayerDataManagers[0].Ready = false;
+        PlayerDataManagers[1].Ready = false;
     }
 
     void Update()
@@ -74,18 +77,11 @@ public class AGame : MonoBehaviour
         var plOne = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[0].PlayerDevice);
         var plTwo = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[1].PlayerDevice);
 
-        plOne.gameObject.transform.position = new Vector3(-3.5f,0.0f,0.0f);
-        plTwo.gameObject.transform.position = new Vector3(3.5f,0.0f,0.0f);
-        plTwo.transform.eulerAngles = new Vector3(0.0f,180.0f,0.0f);
-
         APlayer aPlayerOne = plOne.GetComponent<APlayer>();
         APlayer aPlayerTwo = plTwo.GetComponent<APlayer>();
 
         aPlayerOne.ThisPlayerCount = APlayer.PlayerCount.PlayerOne;
         aPlayerTwo.ThisPlayerCount = APlayer.PlayerCount.PlayerTwo;
-
-        PlayerDataManagers[0].Ready = false;
-        PlayerDataManagers[1].Ready = false;
 
         _nowWaitReady = true;
     }
@@ -143,11 +139,11 @@ public class AGame : MonoBehaviour
                 _playerOnePushCount++;
                 _pushCountText[0].text = _playerOnePushCount.ToString();
 
-                _playerOnGameImages[0].sprite = _playerSprites[6];
+                _playerOnGameImages[0].sprite = _playerSprites[8];
             }
             else if(context.canceled)
             {
-                _playerOnGameImages[0].sprite = _playerSprites[4];
+                _playerOnGameImages[0].sprite = _playerSprites[6];
             }
         }
 
@@ -158,11 +154,11 @@ public class AGame : MonoBehaviour
                 _playerTwoPushCount++;
                 _pushCountText[1].text = _playerTwoPushCount.ToString();
 
-                _playerOnGameImages[1].sprite = _playerSprites[7];
+                _playerOnGameImages[1].sprite = _playerSprites[9];
             }
             else if(context.canceled)
             {
-                _playerOnGameImages[1].sprite = _playerSprites[5];
+                _playerOnGameImages[1].sprite = _playerSprites[7];
             }
         }
     }
@@ -196,6 +192,7 @@ public class AGame : MonoBehaviour
             _resultText[0].text = "勝ち";
             _resultText[1].text = "負け";
             _resultPlayerImage[0].sprite = _playerSprites[2];
+            _resultPlayerImage[1].sprite = _playerSprites[5];
 
             PlayerDataManagers[0].MainModeScore++;
         }
@@ -204,6 +201,7 @@ public class AGame : MonoBehaviour
             _resultText[0].text = "負け";
             _resultText[1].text = "勝ち";
             _resultPlayerImage[1].sprite = _playerSprites[3];
+            _resultPlayerImage[0].sprite = _playerSprites[4];
 
             PlayerDataManagers[1].MainModeScore++;
         }
@@ -217,6 +215,9 @@ public class AGame : MonoBehaviour
         {
             _resultText[0].text = PlayerDataManagers[0].MainModeScore.ToString();
             _resultText[1].text = PlayerDataManagers[1].MainModeScore.ToString();
+
+            _resultPlayerImage[0].sprite = _playerSprites[0];
+            _resultPlayerImage[1].sprite = _playerSprites[1];
         }
         yield return new WaitForSeconds(3f);
 

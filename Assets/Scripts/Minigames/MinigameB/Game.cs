@@ -1,13 +1,31 @@
+using System.Collections;
+using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour
 {
+    //æœ€åˆã«è¡¨ç¤ºã•ã‚Œã‚‹ãƒ‘ãƒãƒ«
+    [SerializeField] GameObject _firstPanel;
+    //ãƒ©ã‚¦ãƒ³ãƒ‰æ•°ã‚’å‡ºã™ãƒ†ã‚­ã‚¹ãƒˆ
+    [SerializeField] TextMeshProUGUI _roundText;
+    //æº–å‚™ä¸­ã‹ã©ã†ã‹
+    private bool _nowWaitReady = false;
+    //éŠã³æ–¹èª¬æ˜ãƒ‘ãƒãƒ«
+    [SerializeField] GameObject _howToPlayPanel;
+    //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®è¦‹ãŸç›®
+    [SerializeField] Sprite[] _playerSprites;
+    //æº–å‚™ä¸­ãƒœã‚¿ãƒ³ç”»åƒ
+    [SerializeField] Image[] _waitReadyImage;
+    //ã‚«ã‚¦ãƒ³ãƒˆãƒ€ã‚¦ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
+    [SerializeField] TextMeshProUGUI _countDownText;
+    //ã‚²ãƒ¼ãƒ ä¸­ã‹ã©ã†ã‹
+    public bool OnGame = false;
+
     [Header("Star Settings")]
     [SerializeField] Image starImage;
-    [SerializeField] Color normalColor;
-    [SerializeField] Color glowColor;
 
     [Header("Player Images")]
     [SerializeField] Image player1Image;
@@ -32,77 +50,187 @@ public class Game : MonoBehaviour
 
     private bool movingStar = false;
     private Transform moveTarget;
-    private float p1PressTime = -1f;
-    private float p2PressTime = -1f;
+    private float p1PressTime;
+    private float p2PressTime;
+    private float reactionTime;
 
-    private float startTime;
+    [SerializeField] TextMeshProUGUI[] _pushCountTexts;
 
     void Start()
     {
-        // ƒvƒŒƒCƒ„[¶¬
+        /*// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½
         var plOne = PlayerInput.Instantiate(_playerPrefab, pairWithDevice: PlayerDataManagers[0].PlayerDevice);
         var plTwo = PlayerInput.Instantiate(_playerPrefab, pairWithDevice: PlayerDataManagers[1].PlayerDevice);
 
-        // ƒvƒŒƒCƒ„[‚Ì”Ô†‚ğŠ„‚è“–‚Ä‚é
+        // ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ì”Ôï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è“–ï¿½Ä‚ï¿½
         plOne.gameObject.GetComponent<BPlayer>().ThisPlayerCount = BPlayer.PlayerCount.PlayerOne;
         plTwo.gameObject.GetComponent<BPlayer>().ThisPlayerCount = BPlayer.PlayerCount.PlayerTwo;
 
-        StartGame();
+        StartGame();*/
+
+        if (MainModeManager.instance.OnMainMode)
+        {
+            _roundText.gameObject.SetActive(true);
+            _roundText.text = "Round " + MainModeManager.instance.RoundCount.ToString();
+        }
+
+        Invoke("HowToPlay",3.0f);
+
+        PlayerDataManagers[0].Ready = false;
+        PlayerDataManagers[1].Ready = false;
+    }
+
+    void Update()
+    {
+        /*if (!movingStar) return;
+
+        starImage.transform.position = Vector3.Lerp(
+            starImage.transform.position,
+            moveTarget.position,
+            5f * Time.deltaTime
+        );*/
+
+        WaitReady();
+    }
+
+    void HowToPlay()
+    {
+        _firstPanel.SetActive(false);
+
+        var plOne = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[0].PlayerDevice);
+        var plTwo = PlayerInput.Instantiate(_playerPrefab,pairWithDevice:PlayerDataManagers[1].PlayerDevice);
+
+        BPlayer bPlayerOne = plOne.GetComponent<BPlayer>();
+        BPlayer bPlayerTwo = plTwo.GetComponent<BPlayer>();
+
+        bPlayerOne.ThisPlayerCount = BPlayer.PlayerCount.PlayerOne;
+        bPlayerTwo.ThisPlayerCount = BPlayer.PlayerCount.PlayerTwo;
+
+        _nowWaitReady = true;
+    }
+
+    public void DoReady(BPlayer.PlayerCount playerCount)
+    {
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼1ã®æº–å‚™å®Œäº†ã®å‹•ã
+        if(playerCount == BPlayer.PlayerCount.PlayerOne)
+        {
+            _waitReadyImage[0].sprite = _playerSprites[0];
+        }
+        //ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼2ã®æº–å‚™å®Œäº†ã®å‹•ã
+        if(playerCount == BPlayer.PlayerCount.PlayerTwo)
+        {
+            _waitReadyImage[1].sprite = _playerSprites[1];
+        }
+    }
+
+    async void WaitReady()
+    {
+        if (_nowWaitReady && PlayerDataManagers[0].Ready && PlayerDataManagers[1].Ready)
+        {
+            await Task.Delay(1000);
+            _howToPlayPanel.SetActive(false);
+            StartCoroutine("GameStart");
+            _nowWaitReady = false;
+        }
+    }
+
+    IEnumerator GameStart()
+    {
+        _countDownText.gameObject.SetActive(true);
+        _countDownText.text = "3";
+        yield return new WaitForSeconds(1f);
+
+        _countDownText.text = "2";
+        yield return new WaitForSeconds(1f);
+
+        _countDownText.text = "1";
+        yield return new WaitForSeconds(1f);
+
+        _countDownText.text = "Start";
+        OnGame = true;
+
+        float waitTime = Random.Range(3f, 15f);
+        Invoke(nameof(LightUpStar), waitTime);
+        yield return new WaitForSeconds(1f);
+
+        _countDownText.gameObject.SetActive(false);
     }
 
     public void StartGame()
     {
-        starImage.color = normalColor;
-        starImage.transform.position = new Vector3(Screen.width / 2, Screen.height / 2);
-
-        waiting = true;
+        /*waiting = true;
         canPress = false;
         resultShown = false;
-        movingStar = false;
-
-        float waitTime = Random.Range(3f, 15f);
-        Invoke(nameof(LightUpStar), waitTime);
+        movingStar = false;*/
     }
 
     void LightUpStar()
     {
-        if (!waiting) return;
-
-        starImage.color = glowColor;
+        starImage.color = Color.yellow;
         canPress = true;
     }
 
-    public void WhoPush(int player)
-    {
-        if (resultShown) return;
 
-        // ƒtƒ‰ƒCƒ“ƒO
+
+    public void WhoPush(BPlayer.PlayerCount playerCount,InputAction.CallbackContext context)
+    {
+        /*if (resultShown) return;
+
+        // ï¿½tï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½O
         if (waiting && !canPress)
         {
             ApplyPenalty(player);
             return;
         }
 
-        // ƒyƒiƒ‹ƒeƒB’†‚Í–³Œø
+        // ï¿½yï¿½iï¿½ï¿½ï¿½eï¿½Bï¿½ï¿½ï¿½Í–ï¿½ï¿½ï¿½
         if (player == 1 && p1Penalty) return;
         if (player == 2 && p2Penalty) return;
 
-        // ¯‚ªŒõ‚Á‚Ä‚¢‚È‚¢‚Í–³Œø
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½Í–ï¿½ï¿½ï¿½
         if (!canPress) return;
 
-        // š ‰Ÿ‚µ‚½ŠÔ‚ğ‹L˜^
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½Lï¿½^
         float now = Time.time;
         if (player == 1) p1PressTime = now;
         else p2PressTime = now;
 
-        // š —¼Ò‰Ÿ‚µ‚½‚©ƒ`ƒFƒbƒN
+        // ï¿½ï¿½ ï¿½ï¿½ï¿½Ò‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½N
         if (p1PressTime > 0 && p2PressTime > 0)
         {
             CheckDraw();
             return;
         }
 
-        // ‚Ü‚¾•Ğ•û‚µ‚©‰Ÿ‚µ‚Ä‚¢‚È‚¢ ¨ •Û—¯
+        // ï¿½Ü‚ï¿½ï¿½Ğ•ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ ï¿½ï¿½ ï¿½Û—ï¿½*/
+
+        if(playerCount == BPlayer.PlayerCount.PlayerOne)
+        {
+            if (context.started)
+            {
+                if (canPress)
+                {
+                    player1Image.sprite = _playerSprites[8];
+
+                    p1PressTime = reactionTime;
+                    _pushCountTexts[0].text = p1PressTime.ToString();
+                }
+            }
+        }
+
+        if(playerCount == BPlayer.PlayerCount.PlayerTwo)
+        {
+            if (context.started)
+            {
+                if (canPress)
+                {
+                    player1Image.sprite = _playerSprites[9];
+
+                    p2PressTime = reactionTime;
+                    _pushCountTexts[1].text = p2PressTime.ToString();
+                }
+            }
+        }
     }
 
 
@@ -118,17 +246,6 @@ public class Game : MonoBehaviour
             moveTarget = player2Target;
 
         movingStar = true;
-    }
-
-    void Update()
-    {
-        if (!movingStar) return;
-
-        starImage.transform.position = Vector3.Lerp(
-            starImage.transform.position,
-            moveTarget.position,
-            5f * Time.deltaTime
-        );
     }
 
     void ApplyPenalty(int player)
@@ -158,30 +275,30 @@ public class Game : MonoBehaviour
         p2Penalty = false;
         player2Image.color = Color.white;
     }
-    void CheckDraw()
+    /*void CheckDraw()
     {
         float diff = Mathf.Abs(p1PressTime - p2PressTime);
 
         if (diff <= drawThreshold)
         {
-            // šˆø‚«•ª‚¯ˆ—
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             resultShown = true;
             waiting = false;
             canPress = false;
 
-            Debug.Log("ˆø‚«•ª‚¯I");
+            Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½I");
 
-            // ¯‚ğ’†‰›‚É–ß‚µ‚Ä”’‚É‚µ‚ÄI—¹‚È‚Ç
+            // ï¿½ï¿½ï¿½ğ’†‰ï¿½ï¿½É–ß‚ï¿½ï¿½Ä”ï¿½ï¿½É‚ï¿½ï¿½ÄIï¿½ï¿½ï¿½È‚ï¿½
             starImage.color = normalColor;
             movingStar = false;
 
             return;
         }
 
-        // ‚Ç‚¿‚ç‚ª‘‚¢‚©”»’è
+        // ï¿½Ç‚ï¿½ï¿½ç‚ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if (p1PressTime < p2PressTime)
             DecideWinner(1);
         else
             DecideWinner(2);
-    }
+    }*/
 }
