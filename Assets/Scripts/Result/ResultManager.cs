@@ -27,6 +27,8 @@ public class ResultManager : MonoBehaviour
         }
 
         yield return new WaitForSeconds(7f);
+        //メインモードを終了する
+        MainModeManager.instance.OnMainMode = false;
         SceneManager.LoadScene("Title");
     }
 }
