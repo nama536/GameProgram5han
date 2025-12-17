@@ -1,23 +1,76 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class DPlayer : MonoBehaviour
 {
+    //プレイヤーの判別
+    public enum PlayerCount
+    {
+        PlayerOne,
+        PlayerTwo
+    }
+    public PlayerCount ThisPlayerCount;
+    //インプット
+    [SerializeField] PlayerInput _playerInput;
+
     public DGame.Place PlayerPlace;
 
     [SerializeField] EventSystem _eventSystem;
     [SerializeField] RectTransform _rectTransform;
+
+    public Image PointerImage;
+
+    private Button[] _holes = new Button[2];
 
     private DGame _dGame;
 
     void Start()
     {
         _dGame = FindFirstObjectByType<DGame>();
+        _holes[0] = _dGame.Holes[6].GetComponent<Button>();
+        _holes[1] = _dGame.Holes[8].GetComponent<Button>();
+
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            _holes[0].Select();
+        }
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            _holes[1].Select();
+        }
     }
 
     void Update()
+    {
+        if (_dGame.OnGame)
+        {
+            MovePointer();
+        }
+    }
+
+    public void OnReady()
+    {
+        Debug.Log("レディ");
+        if(ThisPlayerCount == PlayerCount.PlayerOne)
+        {
+            _dGame.PlayerDataManagers[0].Ready = true;
+        }
+
+        if(ThisPlayerCount == PlayerCount.PlayerTwo)
+        {
+            _dGame.PlayerDataManagers[1].Ready = true;
+        }
+
+        _dGame.DoReady(ThisPlayerCount);
+        _playerInput.SwitchCurrentActionMap("DPlayer");
+    }
+
+    void MovePointer()
     {
         if(_eventSystem.currentSelectedGameObject == _dGame.Holes[0])
         {
@@ -66,8 +119,11 @@ public class DPlayer : MonoBehaviour
         }
     }
 
-    public void OnSubmit()
+    public void OnHit()
     {
-        _dGame.Hit(PlayerPlace);
+        if (_dGame.OnGame)
+        {
+            _dGame.Hit(PlayerPlace,ThisPlayerCount);
+        }
     }
 }

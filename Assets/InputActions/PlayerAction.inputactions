@@ -407,6 +407,54 @@
             ]
         },
         {
+            "name": "DPlayer",
+            "id": "6475fe67-f0cd-4c10-902d-d4a1321b6f75",
+            "actions": [
+                {
+                    "name": "MovePointer",
+                    "type": "PassThrough",
+                    "id": "7e6af33f-bade-409e-ad56-18bb8f5d6d51",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hit",
+                    "type": "Button",
+                    "id": "1afdb4e6-5d31-45da-b946-7f2dffb579a0",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "50e395d0-dbd0-4574-8c3b-fb60b7236e17",
+                    "path": "<Gamepad>/dpad",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "MovePointer",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a9868244-60e3-48d4-8cbd-1000d41200be",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Hit",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "EPlayer",
             "id": "8c937ca1-6a5c-4d93-a295-62fe751e922a",
             "actions": [

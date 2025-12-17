@@ -51,6 +51,9 @@ public class EGame : MonoBehaviour
         }
 
         Invoke("HowToPlay",3.0f);
+
+        PlayerDataManagers[0].Ready = false;
+        PlayerDataManagers[1].Ready = false;
     }
 
 
